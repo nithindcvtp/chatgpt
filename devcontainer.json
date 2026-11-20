@@ -1,0 +1,8 @@
+{
+  "name": "Chat",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "postCreateCommand": "pip install -r requirements.txt",
+  "postAttachCommand": "nohup python server.py > server.log 2>&1 &",
+  "forwardPorts": [5000],
+  "portsAttributes": { "5000": { "label": "Chat", "onAutoForward": "openBrowser" } }
+}
