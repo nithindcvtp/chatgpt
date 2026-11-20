@@ -279,7 +279,8 @@ document.addEventListener("click", e => { if (e.target.classList.contains("cp"))
 const DEFAULT_MODEL = "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", SKIP = ["embed","rerank","retriev","guard","safety","parse","clip","riva","voice"];
 const KEY = "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"; // optional: you can paste a key here, but anyone can read it on a public site
 const getKey = () => localStorage.getItem("key") || KEY;
-const base = () => (localStorage.getItem("base") || "https://integrate.api.nvidia.com/v1").replace(/\/$/, "");
+const PROXY = ""; // paste your Cloudflare Worker URL here, e.g. "https://chat.yourname.workers.dev"
+const base = () => (localStorage.getItem("base") || PROXY || "https://integrate.api.nvidia.com/v1").replace(/\/$/, "");
 function askKey() {
   const k = prompt("Paste your NVIDIA API key (saved only in this browser):", getKey());
   if (k !== null) localStorage.setItem("key", k.trim());
@@ -298,7 +299,11 @@ async function loadModels() {
   } catch { m.add(new Option(DEFAULT_MODEL, DEFAULT_MODEL)); }
 }
 const dataUrl = f => new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = no; r.readAsDataURL(f); });
-loadModels(); if (!getKey()) setTimeout(askKey, 300);
+function askProxy() {
+  const b = prompt("Paste your Cloudflare Worker address (like https://name.yourname.workers.dev). Press Cancel to skip:", "");
+  localStorage.setItem("base", (b || "").trim()); loadModels();
+}
+loadModels(); if (!PROXY && localStorage.getItem("base") === null) setTimeout(askProxy, 300);
 open(fresh());
 </script>
 </body>
